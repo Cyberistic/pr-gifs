@@ -1,0 +1,12 @@
+## PR URL
+https://github.com/better-auth/better-hub/pull/291
+
+## Screenshots / GIFs
+
+<p align="center">
+<img src="https://github.com/Cyberistic/pr-gifs/blob/main/better-hub/contribution-graph-enhancement/preview_2026-03-05_02-48-52.gif?raw=true" alt="preview_2026-03-05_02-48-52.gif" height="auto" width="50%"/>
+</p>
+
+
+---
+Generated on 2026-03-05 02:48:56
