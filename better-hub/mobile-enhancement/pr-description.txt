@@ -1,12 +1,16 @@
 ## PR URL
-https://github.com/Cyberistic/pr-gifs/pull/1
+https://github.com/better-auth/better-hub/pull/290
 
 ## Screenshots / GIFs
 
-<img src="https://github.com/Cyberistic/pr-gifs/blob/main/better-hub/mobile-enhancement/after.gif?raw=true" alt="after.gif" style="max-height: 90vh; width: auto; height: auto;" />
+<p align="center">
+<img src="https://github.com/Cyberistic/pr-gifs/blob/main/better-hub/mobile-enhancement/after.gif?raw=true" alt="after.gif" height="auto" width="50%"/>
+</p>
 
-<img src="https://github.com/Cyberistic/pr-gifs/blob/main/better-hub/mobile-enhancement/before.gif?raw=true" alt="before.gif" style="max-height: 90vh; width: auto; height: auto;" />
+<p align="center">
+<img src="https://github.com/Cyberistic/pr-gifs/blob/main/better-hub/mobile-enhancement/before.gif?raw=true" alt="before.gif" height="auto" width="50%"/>
+</p>
 
 
 ---
-Generated on 2026-03-05 01:06:26
+Generated on 2026-03-05 01:15:55

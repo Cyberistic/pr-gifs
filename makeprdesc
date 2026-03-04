@@ -89,9 +89,11 @@ echo "$gif_files" | while read -r gif_path; do
     clean_path="${rel_path#./}"
     raw_url="${repo_url}/blob/main/${clean_path}?raw=true"
     
-    # Write HTML img tag with max full screen height styling
+    # Write centered HTML img tag
     cat >> "$OUTPUT_FILE" << EOF
-<img src="$raw_url" alt="$filename" style="max-height: 90vh; width: auto; height: auto;" />
+<p align="center">
+<img src="$raw_url" alt="$filename" height="auto" width="50%"/>
+</p>
 
 EOF
     
