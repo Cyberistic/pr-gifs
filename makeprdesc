@@ -1,0 +1,117 @@
+#!/bin/bash
+
+# makeprdesc - Generate PR description with GIF assets
+# Usage: makeprdesc <pr_url> <directory_with_gifs>
+# Output: Creates pr-description.txt with formatted HTML for GitHub PRs
+
+set -e
+
+# Color codes for output
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+BLUE='\033[0;34m'
+NC='\033[0m' # No Color
+
+# Check arguments
+if [ $# -lt 2 ]; then
+    echo -e "${YELLOW}Usage: makeprdesc <pr_url> <directory_with_gifs>${NC}"
+    echo ""
+    echo "Example:"
+    echo "  makeprdesc https://github.com/user/repo/pull/123 ./assets/"
+    echo ""
+    echo "Generates pr-description.txt with formatted GIF embeds"
+    exit 1
+fi
+
+PR_URL="$1"
+GIF_DIR="$2"
+OUTPUT_FILE="${GIF_DIR}/pr-description.txt"
+
+# Check if directory exists
+if [ ! -d "$GIF_DIR" ]; then
+    echo -e "${RED}Error: Directory not found: $GIF_DIR${NC}"
+    exit 1
+fi
+
+# Find all GIF files in the directory
+gif_files=$(find "$GIF_DIR" -maxdepth 1 -name "*.gif" -type f 2>/dev/null | sort)
+
+if [ -z "$gif_files" ]; then
+    echo -e "${RED}Error: No GIF files found in $GIF_DIR${NC}"
+    exit 1
+fi
+
+# Create the output file
+echo -e "${BLUE}Creating PR description...${NC}"
+echo ""
+
+# Start writing to file
+cat > "$OUTPUT_FILE" << EOF
+## PR URL
+$PR_URL
+
+## Screenshots / GIFs
+
+EOF
+
+# Process each GIF file
+echo "$gif_files" | while read -r gif_path; do
+    filename=$(basename "$gif_path")
+    
+    # Get relative path from repo root (assuming standard structure)
+    # Convert local path to GitHub raw URL format
+    # Example: ./better-hub/fix-horizontal-scroll/after.gif
+    # Becomes: https://github.com/Cyberistic/pr-gifs/blob/main/better-hub/fix-horizontal-scroll/after.gif?raw=true
+    
+    # Get the relative path from the current working directory
+    rel_path=$(realpath --relative-to="$(pwd)" "$gif_path" 2>/dev/null || echo "$gif_path")
+    
+    # Extract repo info from git remote (if in a git repo)
+    repo_url=""
+    if git remote get-url origin &>/dev/null; then
+        remote_url=$(git remote get-url origin)
+        # Convert SSH URL to HTTPS if needed
+        if [[ "$remote_url" == git@github.com:* ]]; then
+            repo_url=$(echo "$remote_url" | sed 's/git@github.com:/https:\/\/github.com\//' | sed 's/\.git$//')
+        elif [[ "$remote_url" == https://github.com/* ]]; then
+            repo_url=$(echo "$remote_url" | sed 's/\.git$//')
+        fi
+    fi
+    
+    # If we can't detect repo, use a placeholder
+    if [ -z "$repo_url" ]; then
+        repo_url="https://github.com/USERNAME/REPO"
+    fi
+    
+    # Construct the raw URL
+    # Remove leading ./ if present
+    clean_path="${rel_path#./}"
+    raw_url="${repo_url}/blob/main/${clean_path}?raw=true"
+    
+    # Write HTML img tag with max full screen height styling
+    cat >> "$OUTPUT_FILE" << EOF
+<img src="$raw_url" alt="$filename" style="max-height: 90vh; width: auto; height: auto;" />
+
+EOF
+    
+    echo -e "${GREEN}✓${NC} Added: $filename"
+done
+
+echo "" >> "$OUTPUT_FILE"
+echo "---" >> "$OUTPUT_FILE"
+echo "Generated on $(date '+%Y-%m-%d %H:%M:%S')" >> "$OUTPUT_FILE"
+
+echo ""
+echo -e "${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
+echo -e "${GREEN}✓ PR description created!${NC}"
+echo ""
+echo -e "${BLUE}Output file:${NC} $OUTPUT_FILE"
+echo ""
+echo -e "${BLUE}Preview:${NC}"
+echo "───────────────────────────────────────────────"
+cat "$OUTPUT_FILE"
+echo "───────────────────────────────────────────────"
+echo ""
+
+exit 0
